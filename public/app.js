@@ -1,23 +1,41 @@
-document.getElementById('uploadForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-
-    const formData = new FormData();
-    formData.append('textInput', document.getElementById('textInput').value);
-    formData.append('videoInput', document.getElementById('videoInput').files[0]);
-
-    try {
-        const response = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const data = await response.json();
-        if (data.audioUrl) {
-            const audioPlayer = document.getElementById('audioPlayer');
-            audioPlayer.src = data.audioUrl;
-            audioPlayer.style.display = 'block';
-        }
-    } catch (error) {
-        console.error('Error:', error);
+document.addEventListener('DOMContentLoaded', () => {
+    const uploadForm = document.getElementById('uploadForm');
+    const videoInput = document.getElementById('videoInput');
+    const audioPlayer = document.getElementById('audioPlayer');
+  
+    // Handle video preview
+    videoInput.addEventListener('change', handleVideoPreview);
+  
+    function handleVideoPreview(event) {
+      const existingPreview = document.getElementById('videoPreview');
+      if (existingPreview) {
+        existingPreview.remove();
+      }
+  
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('video/')) {
+        const videoPreview = document.createElement('video');
+        videoPreview.setAttribute('controls', 'controls');
+        videoPreview.setAttribute('width', '400px');
+        videoPreview.setAttribute('id', 'videoPreview');
+        videoPreview.src = URL.createObjectURL(file);
+  
+        videoInput.parentNode.insertBefore(videoPreview, videoInput.nextSibling);
+      }
     }
-});
+  
+    uploadForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+  
+      // Optionally, generate or handle the audio file here
+      // For demonstration purposes, we'll assume an audio file is generated
+      const audioFilePath = 'your-audio-file.mp3'; // Update this with the actual path
+  
+      // Store the audio file path in local storage (or use other methods as needed)
+      localStorage.setItem('audioFilePath', audioFilePath);
+  
+      // Redirect to the new page
+      window.location.href = 'audioPage.html';
+    });
+  });
+  
