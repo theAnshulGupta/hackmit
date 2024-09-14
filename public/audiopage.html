@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audio Player</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Audio Player</h1>
+    <audio id="audioPlayer" controls></audio>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const audioPlayer = document.getElementById("audioPlayer");
+
+        // Retrieve the audio file path from local storage
+        const audioFilePath = localStorage.getItem("audioFilePath");
+        if (audioFilePath) {
+          audioPlayer.src = audioFilePath;
+        } else {
+          audioPlayer.textContent = "No audio file available";
+        }
+      });
+    </script>
+  </body>
+</html>
