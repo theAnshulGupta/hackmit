@@ -1,15 +1,15 @@
+require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { generateAudio } = require('./audioGeneration');
 
 const app = express();
 const port = 3000;
 
-// Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Multer setup for file upload handling
 const storage = multer.diskStorage({
     destination: './uploads/',
     filename: (req, file, cb) => {
@@ -28,16 +28,15 @@ app.post('/api/upload', upload.single('videoInput'), async (req, res) => {
         const firstApiResponse = await makeChatGptApiCall(textInput, videoFilePath);
         const generatedText = firstApiResponse.generatedText;
 
-        // 2nd API Call to ChatGPT with the text generated from the first call to get audio
-        const secondApiResponse = await makeChatGptApiCallForAudio(generatedText);
+        const cdnLink = await generateAudio(generatedText);
         const audioFilePath = `./uploads/${Date.now()}-audio.mp3`;
-        fs.writeFileSync(audioFilePath, secondApiResponse.audioData);
+        fs.writeFileSync(audioFilePath, audioData);
 
         // Send back the audio URL to the frontend
         res.json({ audioUrl: `/uploads/${path.basename(audioFilePath)}` });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to process the request' });
+        console.error("Error in /api/upload:", error);
+        res.status(500).json({ error: error.message || 'Failed to process the request' });
     }
 });
 
@@ -45,15 +44,9 @@ app.post('/api/upload', upload.single('videoInput'), async (req, res) => {
 async function makeChatGptApiCall(text, videoFilePath) {
     // You will need to replace this with an actual API call to ChatGPT
     // For now, we simulate by returning dummy text
-    return { generatedText: "This is a generated response from ChatGPT based on video and text input." };
+    return { generatedText: "The piece starts with a majestic sunrise over a vast, rocky landscape, evoking a sense of awe and wonder. It then transitions to a serene forest path bathed in golden light, inviting a feeling of peaceful exploration." };
 }
-
-// Function to make an API call to ChatGPT (stub for audio generation)
-async function makeChatGptApiCallForAudio(text) {
-    // Simulate an API call that returns audio data (you'll implement this)
-    return { audioData: Buffer.from('fake_audio_data') }; // Replace with real data
-}
-
+//  We start with a quick coffee stop, where everyone shares their game plan for the day, from Canaan’s mission to find new kicks to Rich's hunt for the latest tech gadgets. The group checks out some stores, cracking jokes and showing off some hilarious (and questionable) outfit choices. Anshul gets distracted by a random arcade, and we all jump into a spontaneous gaming session. The day wraps up with some good food at the food court and a quick recap of the best moments. Overall, just a chill day hanging out and making memories!
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
