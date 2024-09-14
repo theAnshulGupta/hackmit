@@ -6,7 +6,7 @@ const fs = require('fs');
 const { generateAudio } = require('./audioGeneration');
 
 const app = express();
-const port = 3000;
+const port = 3005;
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
         cb(null, `${Date.now()}-${file.originalname}`);
     }
 });
+
 const upload = multer({ storage: storage });
 
 // Routes
@@ -29,11 +30,11 @@ app.post('/api/upload', upload.single('videoInput'), async (req, res) => {
         const generatedText = firstApiResponse.generatedText;
 
         const cdnLink = await generateAudio(generatedText);
-        const audioFilePath = `./uploads/${Date.now()}-audio.mp3`;
-        fs.writeFileSync(audioFilePath, audioData);
+        // const audioFilePath = `./uploads/${Date.now()}-audio.mp3`;
+        // fs.writeFileSync(audioFilePath, audioData);
 
-        // Send back the audio URL to the frontend
-        res.json({ audioUrl: `/uploads/${path.basename(audioFilePath)}` });
+        // // Send back the audio URL to the frontend
+        // res.json({ audioUrl: `/uploads/${path.basename(audioFilePath)}` });
     } catch (error) {
         console.error("Error in /api/upload:", error);
         res.status(500).json({ error: error.message || 'Failed to process the request' });

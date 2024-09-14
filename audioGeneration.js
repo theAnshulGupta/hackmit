@@ -25,7 +25,9 @@ async function generateAudio(text) {
 
         const data = await response.json();
         song_uuid = data["id"]
-        cdn_link = "https://cdn2.suno.ai/image_" + song_uuid + ".jpeg?width=100"
+        cdn_link = "https://cdn1.suno.ai/" + song_uuid + ".mp3"
+        console.log(song_uuid)
+        console.log(cdn_link)
 
         return cdn_link
         
@@ -35,4 +37,4 @@ async function generateAudio(text) {
     }
 }
 
-module.exports = { generateAudio };
+module.exports = { generateAudio }; 
