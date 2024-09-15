@@ -9,7 +9,7 @@ const fetch = require('node-fetch');
 const ffmpeg = require('fluent-ffmpeg'); 
 
 const app = express();
-const port = 3030;
+const port = 3050;
 
 app.use(express.static(path.join(__dirname, 'public')));
 

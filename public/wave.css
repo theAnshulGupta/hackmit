@@ -1,20 +1,82 @@
 body {
-  font-family: Arial, sans-serif;
   background-color: #fff;
   color: #333;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
   height: 100vh;
   margin: 0;
+  font-family: Raleway;
 }
 
-.title {  
+.title {
+  text-align: center;
   margin-bottom: 20px;
-  font-size: 28px;
 }
 
+/* Sidebar Styles */
+.sidebar {
+  width: 180px;
+  background-color: #fff; /* Set sidebar background to white */
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 540;
+  border-right: 1px solid rgb(198, 196, 196); /* Light grey vertical line */
+
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 30px 0;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #7f8c8d; /* Lighter shade of black */
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  padding-left: 15px; /* Align items to the left */
+  transition: all 0.3s ease;
+}
+
+.sidebar ul li a i {
+  margin-right: 10px;
+}
+
+.sidebar ul li a:hover {
+  color: #2c3e50; /* Darker shade of black on hover */
+}
+
+.github {
+  margin-top: auto;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.github a {
+  text-decoration: none;
+  color: #7f8c8d; /* Lighter shade of black */
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  padding-left: 15px; /* Align items to the left */
+}
+
+.github a:hover {
+  color: #2c3e50; /* Darker shade of black on hover */
+}
+
+/* Audio Player Content */
 .audio-player {
   display: flex;
   flex-direction: column;
@@ -22,13 +84,16 @@ body {
   justify-content: center;
   background-color: #fff;
   padding: 20px;
+  margin-left: 20px;
+  margin-right: 30px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 800px;
+  width: calc(100% - 200px); /* Adjust width to make room for sidebar */
   position: relative;
 }
 
+ul{
+  margin-top: 20px
+}
 /* Waveform Container */
 #waveform {
   width: 100%;
@@ -147,7 +212,7 @@ input[type="range"]::-moz-range-thumb {
   font-size: 15px;
   padding: 15px;
   border-radius: 50%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 10px rgb(230, 217, 217);
   transition: all 0.3s ease;
 }
 

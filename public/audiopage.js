@@ -130,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Function to set up the download link
     function setupDownload(audioUrl) {
       downloadBtn.href = audioUrl; // Set the href to the audio file URL for downloading
+      downloadSidebar.href = audioUrl; // Set the href to the audio file URL for downloading
       downloadBtn.download = "audio.mp3"; // The file name for the downloaded audio
     }
   });  
