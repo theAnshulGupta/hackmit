@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Audio Player with Waveform</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .progress-bar{
+        border-radius: 2px;
+    }
+
+    .audio-player {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 800px;
+    }
+
+    /* Waveform Container */
+    #waveform {
+      width: 100%;
+      height: 128px;
+      background-color: #f1f1f1;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 350px;
+      margin-top: 10px;
+    }
+
+    .controls button {
+      background: none;
+      border: none;
+      color: #333;
+      font-size: 24px;
+      cursor: pointer;
+      margin: 0 15px;
+    }
+
+    .controls button:hover {
+      color: #1DB954;
+    }
+
+    /* Progress Bar and Time Controls */
+    .time-bar-container {
+      display: flex;
+      align-items: center;
+      justify-content: center; /* Center horizontally */
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .time-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 80%;
+      margin: 0 10px;
+      position: relative;
+    }
+
+    .times {
+      font-size: 14px;
+      margin-left: 8px;
+      margin-right: 8px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 5px;
+      background: #ccc;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .progress-bar div {
+      width: 0;
+      height: 100%;
+      background-color: #1DB954;
+    }
+    #progress{
+        border-radius: 2px;
+    }
+
+    /* Hidden dot until hover */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      background: transparent;
+      cursor: pointer;
+      position: absolute;
+      top: -7px;
+      z-index: 2;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 12px;
+      width: 12px;
+      background: #1DB954;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      height: 12px;
+      width: 12px;
+      background: #1DB954;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    /* Show dot only when hovering over the progress bar */
+    .progress-bar:hover{
+      opacity: 1;
+      transform: translateY(-150%); /* Move dot above the bar */
+    }
+
+    .progress-bar:hover{
+      opacity: 1;
+      transform: translateY(-150%);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="audio-player">
+  <!-- Waveform -->
+  <div id="waveform"></div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button id="decreaseSpeedBtn"><i class="fas fa-backward"></i></button>
+    <button id="playPauseBtn"><i class="fas fa-play"></i></button>
+    <button id="increaseSpeedBtn"><i class="fas fa-forward"></i></button>
+    <span class="speed-multiplier" id="speedMultiplier">1.0x</span>
+  </div>
+
+  <!-- Time Bar and Progress -->
+  <div class="time-bar-container">
+    <span class="times" id="currentTime">0:00</span>
+    <div class="time-bar">
+      <input type="range" id="progressBar" value="0" min="0" step="1">
+      <div class="progress-bar">
+        <div id="progress"></div>
+      </div>
+    </div>
+    <span class="times" id="durationTime">0:00</span>
+  </div>
+</div>
+
+<script src="https://unpkg.com/wavesurfer.js"></script>
+
+<script>
+  var wavesurfer = WaveSurfer.create({
+    container: '#waveform',
+    waveColor: '#a0c4ff',
+    progressColor: '#1DB954',
+    cursorColor: '#1DB954',
+    barWidth: 2,
+    height: 128,
+  });
+
+  wavesurfer.load('https://cdn1.suno.ai/0bc3dcfd-d4ff-4d71-975d-4e7ba4f2a421.mp3'); 
+  
+  const playPauseBtn = document.getElementById("playPauseBtn");
+  const decreaseSpeedBtn = document.getElementById("decreaseSpeedBtn");
+  const increaseSpeedBtn = document.getElementById("increaseSpeedBtn");
+  const speedMultiplierDisplay = document.getElementById("speedMultiplier");
+  const currentTimeSpan = document.getElementById("currentTime");
+  const durationTimeSpan = document.getElementById("durationTime");
+  const progressBar = document.getElementById("progressBar");
+  const progress = document.getElementById("progress");
+
+  let isPlaying = false;
+  let playbackRate = 1.0;
+
+  playPauseBtn.addEventListener("click", () => {
+    if (isPlaying) {
+      wavesurfer.pause();
+      playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+    } else {
+      wavesurfer.play();
+      playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    }
+    isPlaying = !isPlaying;
+  });
+
+  decreaseSpeedBtn.addEventListener("click", () => {
+    playbackRate = Math.max(0.5, playbackRate - 0.1); // Set minimum speed to 0.5x
+    wavesurfer.setPlaybackRate(playbackRate);
+    updateSpeedDisplay();
+  });
+
+  increaseSpeedBtn.addEventListener("click", () => {
+    playbackRate = Math.min(2.0, playbackRate + 0.1); // Set maximum speed to 2.0x
+    wavesurfer.setPlaybackRate(playbackRate);
+    updateSpeedDisplay();
+  });
+
+  function updateSpeedDisplay() {
+    speedMultiplierDisplay.textContent = playbackRate.toFixed(1) + 'x';
+  }
+
+  wavesurfer.on('audioprocess', () => {
+    const currentTime = wavesurfer.getCurrentTime();
+    const duration = wavesurfer.getDuration();
+
+    progressBar.max = duration;
+    progressBar.value = currentTime;
+    progress.style.width = (currentTime / duration) * 100 + '%';
+
+    currentTimeSpan.textContent = formatTime(currentTime);
+    durationTimeSpan.textContent = formatTime(duration);
+  });
+
+  // Sync progress bar on seek
+  progressBar.addEventListener("input", () => {
+    wavesurfer.seekTo(progressBar.value / progressBar.max);
+  });
+
+  // Scrubbing functionality on waveform
+  wavesurfer.on('seek', () => {
+    const currentTime = wavesurfer.getCurrentTime();
+    const duration = wavesurfer.getDuration();
+
+    progressBar.value = currentTime;
+    progress.style.width = (currentTime / duration) * 100 + '%';
+    currentTimeSpan.textContent = formatTime(currentTime);
+  });
+
+  // Format time into minutes and seconds
+  function formatTime(time) {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  }
+
+  // Set duration when the audio is ready
+  wavesurfer.on('ready', () => {
+    durationTimeSpan.textContent = formatTime(wavesurfer.getDuration());
+  });
+</script>
+
+</body>
+</html>

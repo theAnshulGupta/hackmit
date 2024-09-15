@@ -42,3 +42,10 @@ document.getElementById('videoInput').addEventListener('change', function(event)
     videoPreview.style.display = 'block';
   }
 });
+
+
+document.getElementById("uploadForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+  const spinner = document.getElementById("spinner");
+  spinner.style.display = "inline-block";
+});
