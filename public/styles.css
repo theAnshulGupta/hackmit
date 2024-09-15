@@ -27,6 +27,10 @@ body {
   input[type="radio"] {
     margin-right: 10px; /* Space between radio button and label */
   }
+
+  #videoInput{
+    width: 300px;
+  }
   
   input[type="text"],
   input[type="file"] {

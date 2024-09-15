@@ -49,13 +49,11 @@ async function processVideo(videoPath, textInput) {
       });
     }
 
-    console.log("Making LLM inference request...");
     const result = await model.generateContent(parts);
     const response = await result.response;
     const generatedText = response.text();
     console.log("Generated content:", generatedText);
 
-    // Clean up frames
     for (const frame of frames) {
       await fs.unlink(path.join(framesDir, frame));
     }
