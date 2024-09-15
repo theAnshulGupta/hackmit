@@ -6,6 +6,7 @@ const fs = require('fs');
 const { generateAudio } = require('./audioGeneration');
 const fetch = require('node-fetch'); // Use node-fetch for making HTTP requests
 const base64 = require('base-64'); // For base64 encoding (if needed)
+const ffmpeg = require('fluent-ffmpeg'); // Use fluent-ffmpeg for video/audio processing
 
 const app = express();
 const port = 3005;
@@ -54,11 +55,14 @@ async function makeChatGptApiCall(text, videoFilePath) {
     };
 }
 
-// Function to make the Base10 Whisper AI call
+/// Function to extract audio from video and make the Base10 Whisper AI call
 async function makeBase10WhisperAICall(videoFilePath) {
     try {
-        // Read the video file, encode it to base64
-        const audioBase64 = base64.encode(fs.readFileSync(videoFilePath).toString('base64'));
+        // Extract the audio file from the video using FFmpeg
+        const audioFilePath = await extractAudioFromVideo(videoFilePath);
+
+        // Read the extracted audio file, encode it to base64
+        const audioBase64 = base64.encode(fs.readFileSync(audioFilePath).toString('base64'));
 
         // Make the POST request to the Base10 Whisper AI API
         const resp = await fetch('https://model-7qkpp9dw.api.baseten.co/development/predict', {
@@ -84,6 +88,25 @@ async function makeBase10WhisperAICall(videoFilePath) {
         console.error('Error in makeBase10WhisperAICall:', error);
         throw error;
     }
+}
+
+// Helper function to extract audio from video using FFmpeg
+function extractAudioFromVideo(videoFilePath) {
+    return new Promise((resolve, reject) => {
+        const audioFilePath = videoFilePath.replace(path.extname(videoFilePath), '.mp3'); // Change extension to .mp3
+
+        ffmpeg(videoFilePath)
+            .output(audioFilePath)
+            .on('end', () => {
+                console.log(`Audio extracted to ${audioFilePath}`);
+                resolve(audioFilePath);
+            })
+            .on('error', (err) => {
+                console.error('Error extracting audio:', err);
+                reject(err);
+            })
+            .run();
+    });
 }
 
 // Start the server
