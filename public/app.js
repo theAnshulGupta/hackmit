@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
 
       const formData = new FormData(uploadForm);
+      const selectedGenre = document.querySelector('input[name="songType"]:checked').value;
+      formData.append('genre', selectedGenre);
 
       try {
           const response = await fetch('/api/upload', {

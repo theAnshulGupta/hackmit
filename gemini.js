@@ -10,6 +10,18 @@ ffmpeg.setFfprobePath(ffprobePath);
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+async function mergeTexts(videoText, audioText) {
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const prompt = `Merge the following video and audio descriptions into a concise summary of no more than 40 words:
+
+  Video: ${videoText}
+  Audio: ${audioText}`;``
+
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  return response.text().trim();
+}
+
 async function extractFrames(videoPath, numFrames = 5) {
   const framesDir = path.join(path.dirname(videoPath), 'frames');
   await fs.mkdir(framesDir, { recursive: true });
@@ -65,4 +77,4 @@ async function processVideo(videoPath, textInput) {
   }
 }
 
-module.exports = { processVideo };
+module.exports = { processVideo, mergeTexts };

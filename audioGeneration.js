@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
-async function generateAudio(text) {
-    console.log("Generating audio for text:", text);
+async function generateAudio(text, genre) {
+    const finalText = "Make a " + genre + " song about " + text;
     try {
         const response = await fetch("https://studio-api.suno.ai/api/external/generate/", {
             method: "POST",
@@ -10,8 +10,8 @@ async function generateAudio(text) {
                 "content-type": "application/json"
             },
             body: JSON.stringify({
-                topic: text,
-                tags: "rap"
+                topic: finalText,
+                tags: genre
             })
         });
 

@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { generateAudio } = require('./audioGeneration');
-const { processVideo } = require('./gemini');
+const { processVideo, mergeTexts } = require('./gemini');
 const fetch = require('node-fetch'); 
 const ffmpeg = require('fluent-ffmpeg'); 
 
@@ -23,14 +23,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/api/upload', upload.single('videoInput'), async (req, res) => {
-    const { textInput } = req.body;
+    const { genre } = req.body;
     const videoFilePath = req.file.path;
 
     try {
-        const generatedText = await processVideo(videoFilePath, textInput);
+        const generatedText = await processVideo(videoFilePath, "");
         const base10ResponseText = await makeBase10WhisperAICall(videoFilePath);
-        
-        const cdnLink = await generateAudio(generatedText);
+        const mergedText = await mergeTexts(generatedText, base10ResponseText);
+
+        console.log("generatedText", generatedText);
+        console.log("base10ResponseText", base10ResponseText);
+        console.log("mergedText", mergedText);
+
+        const cdnLink = await generateAudio(mergedText, genre);
         
         res.json({
             audioUrl: cdnLink,
