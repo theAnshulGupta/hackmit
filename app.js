@@ -39,13 +39,14 @@ app.post('/api/upload', upload.single('videoInput'), async (req, res) => {
         // Generate the audio based on the generated text
         const cdnLink = await generateAudio(generatedText);
 
-        // Respond to the frontend with the audio URL
-        res.json({ audioUrl: cdnLink });
+        // Respond to the frontend with both the transcription text and audio URL
+        res.json({ audioUrl: cdnLink, transcription: generatedText });
     } catch (error) {
         console.error("Error in /api/upload:", error);
         res.status(500).json({ error: error.message || 'Failed to process the request' });
     }
 });
+
 
 // Function to make an API call to ChatGPT (stub for text generation)
 async function makeChatGptApiCall(text, videoFilePath) {
@@ -60,10 +61,8 @@ async function makeBase10WhisperAICall(videoFilePath) {
     try {
         // Extract the audio file from the video using FFmpeg
         const audioFilePath = await extractAudioFromVideo(videoFilePath);
-
         // Read the extracted audio file, encode it to base64
-        const audioBase64 = base64.encode(fs.readFileSync(audioFilePath).toString('base64'));
-
+        const audioBase64 = fs.readFileSync(audioFilePath).toString('base64');  // Correct
         // Make the POST request to the Base10 Whisper AI API
         const resp = await fetch('https://model-7qkpp9dw.api.baseten.co/development/predict', {
             method: 'POST',
@@ -71,11 +70,12 @@ async function makeBase10WhisperAICall(videoFilePath) {
                 Authorization: 'Api-Key 7b7Gya44.tdNdHgu8NH4CsC0ZfjmKftR5sDNi34m0',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ "audio": audioBase64 })
+            body: JSON.stringify({"audio": audioBase64 })
         });
 
         // Check for successful response
         if (!resp.ok) {
+
             throw new Error(`Base10 Whisper AI API request failed with status ${resp.status}`);
         }
 
