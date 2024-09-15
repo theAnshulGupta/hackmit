@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
 async function generateAudio(text) {
-    const description_prompt = `rap song in a male voice that describe this event: ${text}`
+    const description_prompt = `country song in a female voice that describe this event: ${text}`
     console.log("Generating audio for text:", text);
     try {
         console.log("api key:", process.env.SUNO_API_KEY)
@@ -25,7 +25,7 @@ async function generateAudio(text) {
 
         const data = await response.json();
         song_uuid = data["id"]
-        cdn_link = "https://cdn2.suno.ai/image_" + song_uuid + ".jpeg?width=100"
+        cdn_link = "https://cdn1.suno.ai/" + song_uuid + ".mp3"
 
         return cdn_link
         

@@ -26,16 +26,15 @@ app.post('/api/upload', upload.single('videoInput'), async (req, res) => {
     console.log("videoFilePath", videoFilePath);
 
     try {
-        const firstApiResponse = await processVideo(videoFilePath, " ");
-        console.log("response from generate story", firstApiResponse);
-        const generatedText = firstApiResponse.generatedText;
-
+        const generatedText = await processVideo(videoFilePath, textInput);
+        console.log("response from generate story", generatedText);
         const cdnLink = await generateAudio(generatedText);
-        const audioFilePath = `./uploads/${Date.now()}-audio.mp3`;
-        fs.writeFileSync(audioFilePath, audioData);
+        console.log("cdnLink", cdnLink);
+        // const audioFilePath = `./uploads/${Date.now()}-audio.mp3`;
+        // fs.writeFileSync(audioFilePath, audioData);
 
-        // Send back the audio URL to the frontend
-        res.json({ audioUrl: `/uploads/${path.basename(audioFilePath)}` });
+        // // Send back the audio URL to the frontend
+        // res.json({ audioUrl: `/uploads/${path.basename(audioFilePath)}` });
     } catch (error) {
         console.error("Error in /api/upload:", error);
         res.status(500).json({ error: error.message || 'Failed to process the request' });
