@@ -35,4 +35,4 @@ async function generateAudio(text) {
     }
 }
 
-module.exports = { generateAudio };
+module.exports = { generateAudio }; 
