@@ -10,22 +10,45 @@
     <h1>MelodyMotion</h1>
     <form id="uploadForm">
       <label for="videoInput">Video:</label>
-      <input type="file" id="videoInput" name="videoInput" accept="video/*" required /><br /><br />
+      <input
+        type="file"
+        id="videoInput"
+        name="videoInput"
+        accept="video/*"
+        required
+      /><br /><br />
+
+      <video id="videoPreview" width="300" controls style="display:none;"></video><br /><br />
 
       <label>Song Type:</label><br />
-      <input type="radio" id="pop" name="songType" value="pop" />
-      <label for="pop">Pop</label><br />
+      <label class="container" style="margin-top:10px"
+        >Pop
+        <input
+          type="radio"
+          id="pop"
+          name="songType"
+          value="pop"
+          checked="checked"
+        />
+        <span class="checkmark"></span>
+      </label>
+      <label class="container"
+        >Classical
+        <input type="radio" id="classical" name="songType" value="classical" />
+        <span class="checkmark"></span>
+      </label>
+      <label class="container"
+        >Jazz
+        <input type="radio" id="jazz" name="songType" value="jazz" />
+        <span class="checkmark"></span>
+      </label>
+      <label class="container"
+        >Rock
+        <input type="radio" id="rock" name="songType" value="rock" />
+        <span class="checkmark"></span>
+      </label>
 
-      <input type="radio" id="classical" name="songType" value="classical" />
-      <label for="classical">Classical</label><br />
-
-      <input type="radio" id="jazz" name="songType" value="jazz" />
-      <label for="jazz">Jazz</label><br />
-
-      <input type="radio" id="rock" name="songType" value="rock" />
-      <label for="rock">Rock</label><br /><br />
-
-      <button type="submit">Submit</button>
+      <button type="submit" style="margin-top:20px">Submit</button>
     </form>
 
     <script src="app.js"></script>

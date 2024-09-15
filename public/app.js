@@ -31,3 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   });
 });
+
+document.getElementById('videoInput').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  const videoPreview = document.getElementById('videoPreview');
+
+  if (file) {
+    const videoUrl = URL.createObjectURL(file);
+    videoPreview.src = videoUrl;
+    videoPreview.style.display = 'block';
+  }
+});
